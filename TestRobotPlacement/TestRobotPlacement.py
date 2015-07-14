@@ -305,31 +305,31 @@ class TestRobotPlacementLogic:
     self.delayDisplay('Running the aglorithm')
 
     tri = vtk.vtkDelaunay3D()
-    tri.SetInput(sModel.GetPolyData())
+    tri.SetInputData(sModel.GetPolyData())
 
     elev = vtk.vtkElevationFilter()
-    elev.SetInputConnection(tri.GetOutputPort())
+    elev.SetInputConnection(tri.GetOutput())
 
     implicitDataSet = vtk.vtkImplicitDataSet()
     implicitDataSet.SetDataSet(elev.GetOutput())
     
     triangle = vtk.vtkTriangleFilter()
-    triangle.SetInput(inputModel.GetPolyData())
+    triangle.SetInputData(inputModel.GetPolyData())
     triangle.Update()
 
     computeNormals = vtk.vtkPolyDataNormals()
-    computeNormals.SetInput(triangle.GetOutput())
+    computeNormals.SetInputData(triangle.GetOutput())
     computeNormals.ComputeCellNormalsOn()
     computeNormals.Update()
 
     clip = vtk.vtkClipPolyData()
-    clip.SetInput(computeNormals.GetOutput())
+    clip.SetInputData(computeNormals.GetOutput())
     clip.SetClipFunction(implicitDataSet)
     clip.InsideOutOff()
     clip.Update()
 
     clean = vtk.vtkCleanPolyData()
-    clean.SetInput(clip.GetOutput())
+    clean.SetInputData(clip.GetOutput())
     clean.Update()
 
     polydata = clean.GetOutput()
